@@ -15,7 +15,9 @@ public class Main {
         int tasksAmount2 = 5;
 
         CPUQueue queue = new CPUQueue();
-        CPU cpu = new CPU(queue);
+        CPU cpu1 = new CPU(queue, 1);
+        CPU2 cpu2 = new CPU2(queue, 2);
+
 
         CPUProcess producer1 = new CPUProcess(
                 1,
@@ -31,13 +33,15 @@ public class Main {
                 randValue(minInterval2, maxInterval2),
                 randValue(minComplexity2, maxComplexity2));
 
-        cpu.start();
+        cpu1.start();
+        cpu2.start();
         producer1.start();
         producer2.start();
 
         while (true) {
-            if (!producer1.isAlive() && !producer2.isAlive() && queue.isEmpty() && cpu.isBusy()) {
-                cpu.interrupt();
+            if (!producer1.isAlive() && !producer2.isAlive() && queue.isEmpty() && cpu1.isBusy() && cpu2.isBusy()) {
+                cpu1.interrupt();
+                cpu2.interrupt();
                 System.out.println("========Main finish========");
                 System.out.println("Queue 1 max size: " + queue.queue1MaxSize);
                 System.out.println("Queue 2 max size: " + queue.queue2MaxSize);

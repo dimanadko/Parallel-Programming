@@ -1,38 +1,28 @@
 package com.company;
 
-public class CPU extends Thread {
+public class CPU2 extends Thread {
     private int id;
     CPUQueue queue;
     private int taskProducerID;
 
-    CPU(CPUQueue queue, int id) {
+    CPU2(CPUQueue queue, int id) {
         this.id = id;
         this.queue = queue;
         this.taskProducerID = -1;
 
-        this.queue.setCPU(this);
     }
-
     public void run() {
         while (!isInterrupted()) {
-            Task task = queue.get();
+            Task task = queue.get2();
             taskProducerID = task.producerID;
-            System.out.println("CPU 1 Get task of process " + taskProducerID);
+            System.out.println("CPU 2 Get task of process " + taskProducerID);
             synchronized (this) {
-                long start = System.currentTimeMillis();
                 try {
                     wait(task.getTimeLeft());
                 } catch (InterruptedException ignored) {
                 }
                 taskProducerID = -1;
-                long end = System.currentTimeMillis();
-                task.setProcessedTime(end - start);
-                if (task.getTimeLeft() > 0) {
-                    task.interrupt();
-                    queue.put(task);
-                } else {
-                    System.out.println("CPU 1 Task of process " + task.producerID + " is finished");
-                }
+                System.out.println("CPU 2 Task of process " + task.producerID + " is finished");
             }
         }
     }

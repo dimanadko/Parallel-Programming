@@ -1,6 +1,7 @@
 package com.company;
 
 import java.util.LinkedList;
+import java.util.concurrent.ExecutionException;
 
 public class CPUQueue {
     private final LinkedList<Task> queue1 = new LinkedList<>();
@@ -28,6 +29,31 @@ public class CPUQueue {
         }
 
         return task;
+    }
+
+    public synchronized Task get2() {
+        synchronized (queue2) {
+            try {
+                while (queue2.isEmpty()) {
+                    wait();
+                }
+            } catch (InterruptedException ignored) {
+            }
+
+            Task task;
+            try {
+                task = queue2.remove();
+            } catch (Exception ignored){
+                System.out.println("Out of tasks");
+                try {
+                    wait();
+                } catch (InterruptedException ignored2) {
+                }
+                task = queue2.remove();
+            }
+
+            return task;
+        }
     }
 
     public synchronized void put(Task task) {
